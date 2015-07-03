@@ -1,0 +1,48 @@
+@import "compass";
+@import "theme_variables";
+
+/* block top links */
+ul#header_links {
+	list-style-type: none;
+	margin:23px 18px 0 0;
+	float:right;	
+	overflow:hidden;
+	li {
+		text-transform:capitalize;
+		float: left;
+		padding: 0 14px 0 0;
+		&:first-child {border:none;}
+		a {
+			text-decoration: none;
+			font-weight:bold;
+			font-size:11px;
+			line-height:18px;
+			color:$base-text-color;			
+			&:hover, &.active {
+           color:$color1
+			}
+		}
+	}
+}
+
+
+
+/*block permanent links right and left columns*/
+#permanent_links div {border-bottom: 1px dotted #eee}
+#permanent_links div a {
+	display: block;
+	padding: 7px 11px 5px 22px;
+	color: #333;
+	background:url(img/arrow_right_2.png) no-repeat 10px 10px;
+}
+
+/* block footer links */
+ul#footer_links{
+	clear:both;
+	text-align: center;
+	padding-bottom:6px
+}
+ul#footer_links li{
+	display: inline;
+	padding:0 10px
+}

@@ -1,0 +1,30 @@
+*****************************************
+*              CHANGE LOG 
+*               REDSYS 
+*           PRESTASHOP MODULE
+*****************************************
+
+v.4.1.1
+05/04/2015
+-------
+- fix: Solved "'Ds_Merchant_Order' Número de pedido repetido" error message.
+
+v.4.1.0
+04/30/2015
+-------
+- added: Partial refund possibility
+
+v.4.0.1
+-------
+- fix: Added english language for iso code 'gb'
+
+v.4.0.0
+-------
+- added: Refund possibility
+- added: Bank notifications history
+- added: Payment methods selection
+
+v.3.4
+-------
+- add: Try again option in Error Payments cases
+

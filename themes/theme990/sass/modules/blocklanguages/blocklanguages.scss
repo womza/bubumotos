@@ -1,0 +1,70 @@
+@import "compass";
+@import "theme_variables";
+#languages-block-top {
+	float: right;
+	position: relative;
+	margin-top:24px;
+	
+	// max 479px
+	@media (max-width: $screen-xs - 1) {
+		width: 25%;
+	}													
+	span.firstWord {
+		display: none;
+	}
+	div.current {
+		color: $base-text-color;
+		font-size:11px;
+		line-height:18px;
+		cursor: pointer;		
+		strong {
+		display:none
+		}
+		&:hover, &.active {
+		color:$color1
+		}
+		&:after {
+			 content: "";
+			font-family: $font-icon;
+			font-size: 11px;
+			line-height: 18px;
+			color: #878686;
+			padding-left: 10px;
+		}
+		&.active {
+			&:after {
+				content: "";
+			}
+		}
+		.cur-label {
+			// max 479px
+			@media (max-width: $screen-xs - 1) {
+				display: none;
+			}
+		}
+	}
+ul {
+		display: none;
+		position: absolute;
+		top: 25px;
+		right: 0;
+		width: 157px;
+		background: #232323;
+		z-index: 2;
+		li {
+			color: $light-text-color;
+			line-height: 30px;
+			font-size: 13px;
+			a,
+			> span {
+				@include transition(all 0.3s ease);
+				padding: 0 10px 0 12px;
+				display: block;
+				color: $light-text-color;
+			}
+			&.selected, &:hover a ,&.selected a, &.selected span{
+				color:$color1
+			}
+		}
+	}
+}

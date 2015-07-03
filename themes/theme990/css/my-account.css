@@ -1,0 +1,55 @@
+/* ------- FONTS ------- */
+/* ------- BORDERS ------- */
+/* ------- BACKGROUNDS ------- */
+/* ------- COLORS ------- */
+/* ------- Indents ------- */
+/* ------- Product Elements ------- */
+/* ------- Buttons ------- */
+/* ------- Buttons +/- ------ */
+/* ------- Button Small ------- */
+/* ------- Button exclusive-medium ------- */
+/* ------- My Account List bg ------- */
+/* ------- Product Listing ------- */
+/* ------- Grid/List vars ------- */
+/* ------- Pagination vars ------- */
+/* ------- Product Info ------- */
+/* ------- Cart Steps ------- */
+/* ------- sub heading (h2,h3) define ------- */
+/* ------- Image vars ------- */
+#my-account .addresses-lists {
+  margin-bottom: 30px; }
+#my-account ul.myaccount-link-list li {
+  overflow: hidden;
+  padding-bottom: 10px; }
+  #my-account ul.myaccount-link-list li a {
+    display: block;
+    overflow: hidden;
+    font: 600 16px/20px "Roboto", sans-serif;
+    color: #333333;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+    border: 1px solid;
+    border-color: lightgray;
+    background: #f7f7f7; }
+    #my-account ul.myaccount-link-list li a i {
+      font-size: 25px;
+      color: #666666;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 52px;
+      height: 100%;
+      padding: 10px 0 0 0;
+      text-align: center;
+      border-right: 1px solid #f9f9f9; }
+    #my-account ul.myaccount-link-list li a span {
+      display: block;
+      padding: 13px 15px 15px 17px;
+      overflow: hidden;
+      border-left: 1px solid;
+      margin-left: 52px;
+      border-color: lightgray; }
+    #my-account ul.myaccount-link-list li a:hover {
+      background: #eaeaea;
+      border-color: #c6c6c6; }

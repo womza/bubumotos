@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+	<name>redsys</name>
+	<displayName><![CDATA[Tarjeta de cr&eacute;dito v&iacute;a Banco Sabadell]]></displayName>
+	<version><![CDATA[4.1.1]]></version>
+	<description><![CDATA[Aceptar pagos a trav&eacute;s de Banco Sabadell / Redsys]]></description>
+	<author><![CDATA[OBSolutions.es]]></author>
+	<tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Esta seguro que desea borrar sus detalles]]></confirmUninstall>
+	<is_configurable>1</is_configurable>
+	<need_instance>1</need_instance>
+	<limited_countries></limited_countries>
+</module>

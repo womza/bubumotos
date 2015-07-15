@@ -10,10 +10,10 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
 
     private function _cron()
     {
-        $this->_entityCategories();
-        $this->_entityManufacturers();
-        $this->_entityCombinations();
-        $this->_entityProducts();
+        //$this->_entityCategories();
+        //$this->_entityManufacturers();
+        //$this->_entityCombinations();
+        //$this->_entityProducts();
     }
 
     /**
@@ -68,7 +68,39 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
         $url = Configuration::get('BUBUMOTOS_URL') . '?entity=categories&key='
             . Configuration::get('BUBUMOTOS_API_KEY');
         $csv = $this->getCSVContentFromUrl($url);
-        //var_dump($csv);
+        foreach ($csv as $cat) {
+            $id_category = (int)$cat['id'];
+            $date_add = date('Y-m-d h:i:s', time());
+
+            $data['id_category'] = $id_category;
+            $data['id_parent'] = (int)$cat['parent_category'];
+            $data['id_shop_default'] = 1;
+            $data['active'] = (int)$cat['active'];
+            $data['date_add'] = $date_add;
+            $data['date_upd'] = $date_add;
+            $data['position'] = 1;
+
+            $datal['id_category'] = $id_category;
+            $datal['id_shop'] = 1;
+            $datal['id_lang'] = 1;
+            $datal['name'] = pSQL($cat['name']);
+            $datal['description'] = pSQL($cat['description']);
+            $datal['link_rewrite'] = pSQL($cat['url_rewritten']);
+            $datal['meta_title'] = pSQL($cat['meta_title']);
+            $datal['meta_keywords'] = pSQL($cat['seo_meta_keywords']);
+            $datal['meta_description'] = pSQL($cat['meta_description']);
+
+            $dataShop['id_category'] = (int)$cat['id'];
+            $dataShop['id_shop'] = 1;
+            $dataShop['position'] = 1;
+
+            if(!DB::getInstance()->insert('category', $data))
+                die('Error in category insert : '.$id_category);
+            if(!DB::getInstance()->insert('category_lang', $datal))
+                die('Error in category lang insert : '.$id_category);
+            if(!DB::getInstance()->insert('category_shop', $dataShop))
+                die('Error in category shop insert : '.$id_category);
+        }
     }
 
     private function _entityManufacturers()

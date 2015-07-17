@@ -2,8 +2,14 @@
 
 class bubumotoscronModuleFrontController extends ModuleFrontController
 {
+    private $_default_lang;
+    private $_id_shop;
+
     public function initContent()
     {
+        $this->_default_lang = (int)Configuration::get('PS_LANG_DEFAULT');
+        $this->_id_shop = Context::getContext()->shop->id;    // by default
+
         $this->_cron();
         die;
     }
@@ -11,7 +17,7 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
     private function _cron()
     {
         //$this->_entityCategories();
-        //$this->_entityManufacturers();
+        $this->_entityManufacturers();
         //$this->_entityCombinations();
         //$this->_entityProducts();
     }
@@ -43,6 +49,13 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
         return $parse_csv;
     }
 
+
+    protected function getImageFromUrl($path, $url)
+    {
+        file_put_contents($path, file_get_contents($url));
+    }
+
+
     /**
      * Remove double quotes
      *
@@ -70,19 +83,19 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
         $csv = $this->getCSVContentFromUrl($url);
         foreach ($csv as $cat) {
             $id_category = (int)$cat['id'];
-            $date_add = date('Y-m-d h:i:s', time());
+            $date_add = date('Y-m-d H:i:s', time());
 
             $data['id_category'] = $id_category;
             $data['id_parent'] = (int)$cat['parent_category'];
-            $data['id_shop_default'] = 1;
+            $data['id_shop_default'] = $this->_id_shop;
             $data['active'] = (int)$cat['active'];
             $data['date_add'] = $date_add;
             $data['date_upd'] = $date_add;
             $data['position'] = 1;
 
             $datal['id_category'] = $id_category;
-            $datal['id_shop'] = 1;
-            $datal['id_lang'] = 1;
+            $datal['id_shop'] = $this->_id_shop;
+            $datal['id_lang'] = $this->_default_lang;
             $datal['name'] = pSQL($cat['name']);
             $datal['description'] = pSQL($cat['description']);
             $datal['link_rewrite'] = pSQL($cat['url_rewritten']);
@@ -91,7 +104,7 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
             $datal['meta_description'] = pSQL($cat['meta_description']);
 
             $dataShop['id_category'] = (int)$cat['id'];
-            $dataShop['id_shop'] = 1;
+            $dataShop['id_shop'] = $this->_id_shop;
             $dataShop['position'] = 1;
 
             if(!DB::getInstance()->insert('category', $data))
@@ -109,6 +122,59 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
             . Configuration::get('BUBUMOTOS_API_KEY');
         $csv = $this->getCSVContentFromUrl($url);
         //var_dump($csv);
+        foreach ($csv as $manufacturer) {
+            $id_manufacturer = (int)$manufacturer['id'];
+            $date_add = date('Y-m-d H:i:s', time());
+
+            $data['id_manufacturer'] = $id_manufacturer;
+            $data['name'] = pSQL($manufacturer['name']);
+            $data['date_add'] = $date_add;
+            $data['date_upd'] = $date_add;
+            $data['active'] = (int)$manufacturer['active'];
+
+            $datal['id_manufacturer'] = $id_manufacturer;
+            $datal['id_lang'] = $this->_default_lang;
+            $datal['description'] = pSQL($manufacturer['description']);
+            $datal['short_description'] = pSQL($manufacturer['short_description']);
+            $datal['meta_title'] = pSQL($manufacturer['meta_title']);
+            $datal['meta_keywords'] = pSQL($manufacturer['meta_keywords']);
+            $datal['meta_description'] = pSQL($manufacturer['meta_description']);
+
+            $dataShop['id_manufacturer'] = $id_manufacturer;
+            $dataShop['id_shop'] = $this->_id_shop;
+
+            if(!DB::getInstance()->insert('manufacturer', $data))
+                die('Error in manufacturer insert : '.$id_manufacturer);
+            if(!DB::getInstance()->insert('manufacturer_lang', $datal))
+                die('Error in manufacturer lang insert : '.$id_manufacturer);
+            if(!DB::getInstance()->insert('manufacturer_shop', $dataShop))
+                die('Error in manufacturer shop insert : '.$id_manufacturer);
+
+            // after save, the img is downloaded and put in img folder
+            // save in manufacturer folder
+            $image_origin = $manufacturer['image_url'];
+            // check if origin have image
+            if (strpos($image_origin, 'jpg') !== false) {
+                $image_destinatio = _PS_MANU_IMG_DIR_ . $id_manufacturer . '.jpg';
+                $this->getImageFromUrl($image_destinatio, $image_origin);
+                if (file_exists(_PS_MANU_IMG_DIR_ . $id_manufacturer . '.jpg')) {
+                    $images_types = ImageType::getImagesTypes('manufacturers');
+                    foreach ($images_types as $k => $image_type) {
+                        ImageManager::resize(
+                            _PS_MANU_IMG_DIR_ . $id_manufacturer . '.jpg',
+                            _PS_MANU_IMG_DIR_ . $id_manufacturer . '-' . stripslashes($image_type['name']) . '.jpg',
+                            (int)$image_type['width'],
+                            (int)$image_type['height']
+                        );
+                    }
+
+                    // save in temp manufacturer folder
+                    $image_origin = $manufacturer['image_url'];
+                    $image_destinatio = _PS_TMP_IMG_DIR_ . 'manufacturer_mini_' . $id_manufacturer . '_' . $this->_id_shop . '.jpg';
+                    $this->getImageFromUrl($image_destinatio, $image_origin);
+                }
+            }
+        }
     }
 
     private function _entityCombinations()

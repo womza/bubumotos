@@ -17,9 +17,9 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
     private function _cron()
     {
         //$this->_entityCategories();
-        $this->_entityManufacturers();
+        //$this->_entityManufacturers();
         //$this->_entityCombinations();
-        //$this->_entityProducts();
+        $this->_entityProducts();
     }
 
     /**
@@ -121,7 +121,6 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
         $url = Configuration::get('BUBUMOTOS_URL') . '?entity=manufacturers&key='
             . Configuration::get('BUBUMOTOS_API_KEY');
         $csv = $this->getCSVContentFromUrl($url);
-        //var_dump($csv);
         foreach ($csv as $manufacturer) {
             $id_manufacturer = (int)$manufacturer['id'];
             $date_add = date('Y-m-d H:i:s', time());
@@ -190,7 +189,133 @@ class bubumotoscronModuleFrontController extends ModuleFrontController
     {
         $url = Configuration::get('BUBUMOTOS_URL') . '?entity=products&key='
             . Configuration::get('BUBUMOTOS_API_KEY');
-        $csv = $this->getCSVContentFromUrl($url);
-        //var_dump($csv);
+        //$csv = $this->getCSVContentFromUrl($url);
+
+        $parse_csv = $parse1 = $parse2 = array();
+        $i = 0;
+        $csv = array_map('str_getcsv', explode( "\n", file_get_contents($url) ));
+        // take first row as titles and delete it
+        $keys = explode(';', $csv[0][0]);
+        unset($csv[0]);
+
+        foreach ($csv as $key => $value)
+          $parse1[] = implode('', $value);
+
+        foreach ($parse1 as $key => $value) {
+          if (preg_match("/^[0-9]+;[0-9]+;/", $value))
+            $parse2[$i++] = $value;
+          else
+            $parse2[$i] .= $value;
+
+          var_dump($value);
+        }
+
+        foreach ($parse2 as $content) {
+            $temp = array();
+
+            // html_entity_decode avoid encode to html
+            // $row = explode(';', html_entity_decode(implode('', $content)));
+            // for ($i = 0; $i < count($row); $i++)
+            //     $temp[$keys[$i]] = $this->removeDoubleQuotes($row[$i]);
+            // if (count($temp) > 1)
+            //     $parse_csv[] = $temp;
+        }
+
+        var_dump($parse2);
+        return;
+        foreach ($csv as $product) {
+            $id_product = (int)$product['id'];
+
+            $data['id_product'] = $id_product;
+            $data['id_supplier'] = (int)$product['supplier'];
+            $data['id_manufacturer'] = (int)$product['manufacturer'];
+            $data['id_category_default'] = 2; // as default category
+            $data['id_shop_default'] = ($this->_id_shop == (int)$product['shop_id']) ? $this->_id_shop : (int)$product['shop_id'];
+            $data['id_tax_rules_group'] = (int)$product['tax_rules_ID'];
+            $data['on_sale'] = (int)$product['on_sale'];
+            $data['online_only'] = (int)$product['available_online_only'];
+            $data['ean13'] = pSQL($product['EAN13']);
+            $data['upc'] = pSQL($product['UPC']);
+            $data['ecotax'] = (float)$product['ecotax'];
+            $data['quantity'] = (int)$product['quantity'];
+            $data['minimal_quantity'] = (int)$product['minimal_quantity'];
+            $data['price'] = (float)$product['price'];
+            $data['wholesale_price'] = (float)$product['wholesale_price'];
+            $data['unity'] = pSQL($product['unity']);
+            $data['unit_price_ratio'] = (float)$product['unit_price'];
+            $data['additional_shipping_cost'] = (float)$product['additional_shipping_cost'];
+            $data['referece'] = pSQL($product['reference']);
+            $data['supplier_reference'] = pSQL($product['supplier_reference']);
+            $data['width'] = (float)$product['width'];
+            $data['height'] = (float)$product['height'];
+            $data['depth'] = (float)$product['depth'];
+            $data['weight'] = (float)$product['weight'];
+            $data['out_of_stock'] = (int)$product['out_of_stock'];
+            $data['customizable'] = (int)$product['customizable'];
+            $data['uploadable_files'] = (int)$product['uploadable'];
+            $data['text_fields'] = (int)$product['text_fields'];
+            $data['active'] = (int)$product['active'];
+            $data['available_for_order'] = (int)$product['available_for_order'];
+            $data['available_date'] = $product['product_available_date'];
+            if (!empty($product['condition_']))
+              $data['condition'] = pSQL($product['condition_']);
+            $data['show_price'] = (int)$product['show_price'];
+            if (!empty($product['visibility']))
+              $data['visibility'] = pSQL($product['visibility']);
+            $data['date_add'] = $product['product_creation_date'];
+            $data['date_upd'] = $product['product_creation_date'];
+            $data['advanced_stock_management'] = (int)$product['advanced_stock_management'];
+
+
+            $datal['id_manufacturer'] = $id_product;
+            $datal['id_shop'] = $data['id_shop_default'];
+            $datal['id_lang'] = $this->_default_lang;
+            $datal['description'] = pSQL($product['description']);
+            $datal['description_short'] = pSQL($product['short_description']);
+            $datal['link_rewrite'] = pSQL($product['url_rewrite']);
+            $datal['meta_description'] = pSQL($product['meta_description']);
+            $datal['meta_keywords'] = pSQL($product['meta_keywords']);
+            $datal['meta_title'] = pSQL($product['meta_title']);
+            $datal['name'] = pSQL($product['meta_title']);
+            $datal['available_now'] = pSQL($product['text_when_in_stock']);
+            $datal['available_later'] = pSQL($product['text_when_backorder_allowed']);
+
+
+            $dataShop['id_product'] = $id_product;
+            $dataShop['id_shop'] = ($this->_id_shop == (int)$product['shop_id']) ? $this->_id_shop : (int)$product['shop_id'];
+            $dataShop['id_category_default'] = 2; // as default category
+            $dataShop['id_tax_rules_group'] = (int)$product['tax_rules_ID'];
+            $dataShop['on_sale'] = (int)$product['on_sale'];
+            $dataShop['online_only'] = (int)$product['available_online_only'];
+            $dataShop['ecotax'] = (float)$product['ecotax'];
+            $dataShop['minimal_quantity'] = (int)$product['minimal_quantity'];
+            $dataShop['price'] = (float)$product['price'];
+            $dataShop['wholesale_price'] = (float)$product['wholesale_price'];
+            $dataShop['unity'] = pSQL($product['unity']);
+            $dataShop['unit_price_ratio'] = (float)$product['unit_price'];
+            $dataShop['additional_shipping_cost'] = (float)$product['additional_shipping_cost'];
+            $dataShop['customizable'] = (int)$product['customizable'];
+            $dataShop['uploadable_files'] = (int)$product['uploadable'];
+            $dataShop['text_fields'] = (int)$product['text_fields'];
+            $dataShop['active'] = (int)$product['active'];
+            $dataShop['available_for_order'] = (int)$product['available_for_order'];
+            $dataShop['available_date'] = $product['product_available_date'];
+            if (!empty($product['condition_']))
+              $dataShop['condition'] = pSQL($product['condition_']);
+            $dataShop['show_price'] = (int)$product['show_price'];
+            if (!empty($product['visibility']))
+              $dataShop['visibility'] = pSQL($product['visibility']);
+            $dataShop['advanced_stock_management'] = (int)$product['advanced_stock_management'];
+            $dataShop['date_add'] = $product['product_creation_date'];
+            $dataShop['date_upd'] = $product['product_creation_date'];
+
+
+            // if(!DB::getInstance()->insert('product', $data))
+            //     die('Error in product insert : '.$id_product);
+            // if(!DB::getInstance()->insert('product_lang', $datal))
+            //     die('Error in product lang insert : '.$id_product);
+            // if(!DB::getInstance()->insert('product_shop', $dataShop))
+            //     die('Error in product shop insert : '.$id_product);
+        }
     }
 }

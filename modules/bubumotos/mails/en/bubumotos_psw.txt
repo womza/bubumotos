@@ -1,0 +1,17 @@
+
+[{shop_url}]
+
+Hi {firstname} {lastname},
+
+In order to provide better service, we premiered Bubumotos.com website. We invite you to visit and consult our offers and promotions.
+
+For security reasons we have reset your password indicated below. You can change it from your account manager after logging.
+
+Your new login
+----------------------------------------
+E-MAIL ADDRESS: {email}
+PASSWORD: {passwd}
+
+
+{shop_name} [{shop_url}]
+

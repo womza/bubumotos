@@ -1,0 +1,18 @@
+
+[{shop_url}]
+
+Hola {firstname} {lastname},
+
+Con el fin de dar un mejor servicio, Bubumotos.com estrenamos página web. Te invitamos a que la visites y consultes nuestras ofertas y promociones.
+
+Por motivos de seguridad hemos reseteado tu contraseña por la indicada a continuación. Podrás cambiarla desde el administrador de tu cuenta después de iniciar sesión.
+
+
+Sus nuevos datos de acceso
+----------------------------------------
+DIRECCIÓN EMAIL: {email}
+CONTRASEÑA: {passwd}
+
+
+{shop_name} [{shop_url}]
+

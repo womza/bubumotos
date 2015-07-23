@@ -22,7 +22,7 @@ class bubumotosuserModuleFrontController extends ModuleFrontController
                         '{firstname}' => $customer->firstname,
                         '{passwd}' => $password
                     );
-                    Mail::Send((int)Configuration::get('PS_LANG_DEFAULT'), 'password', Mail::l('Your new password'), $mail_params, $customer->email, $customer->firstname.' '.$customer->lastname);
+                    Mail::Send((int)Configuration::get('PS_LANG_DEFAULT'), 'bubumotos_psw', Mail::l('Your new password', (int)Configuration::get('PS_LANG_DEFAULT')), $mail_params, $customer->email, $customer->firstname.' '.$customer->lastname, null, null, null, null, dirname(__FILE__).'/../../mails/', false, Context::getContext()->shop->id);
                 }
             }
         }
